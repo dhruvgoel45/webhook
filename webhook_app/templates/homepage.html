@@ -11,7 +11,9 @@
         {% for webhook in webhooks %}
         <li>
             <strong>Name:</strong> {{ webhook.name }} <br>
-            <strong>URL:</strong> <a href="{% url 'webhook-view' unique_id=webhook.unique_id %}">{{ webhook.unique_id }}</a>
+            <strong>unique_id:</strong> {{ webhook.unique_id }} <br>
+
+            <strong>URL:</strong> <a href="{% url 'webhook-view' unique_id=webhook.unique_id %}">{% url 'webhook-view' unique_id=webhook.unique_id %}</a>
         </li>
         {% endfor %}
     </ul>
