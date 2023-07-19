@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Homepage</title>
+</head>
+
+<body>
+    <h1>leads</h1>
+    <ul>
+        {% for webhook in webhooks %}
+        <li>
+            <strong>Name:</strong> {{ webhook.name }} <br>
+            <strong>URL:</strong> <a href="{% url 'webhook-view' unique_id=webhook.unique_id %}">{{ webhook.unique_id }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <br>
+    <a href="{% url 'create-webhook' %}">Create New Webhook</a>
+</body>
+
+</html>

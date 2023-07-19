@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from webhook_app.views import webhook_view
+from webhook_app.views import webhook_view,create_webhook,homepage
 
 
 urlpatterns = [
+    path('', homepage, name='homepage'),
     path('admin/', admin.site.urls),
-    path('webhook/<str:unique_id>/', webhook_view, name='webhook'),
-    path('create-webhook/', webhook_view, name='create_webhook'),
-
+    path('webhook/', create_webhook, name='create-webhook'),
+    path('webhook/<str:unique_id>/', webhook_view, name='webhook-view'),
 ]
+
+

@@ -1,11 +1,12 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .models import Webhook
-import json
-from django.shortcuts import get_object_or_404
+import json,uuid
+from django.shortcuts import get_object_or_404,render,redirect
 
 @csrf_exempt
-def webhook_view(request, unique_id):
+
+def create_webhook(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
 
@@ -14,6 +15,7 @@ def webhook_view(request, unique_id):
         phone = data.get('phone')
 
         if name and email and phone:
+            unique_id = str(uuid.uuid4())  # Generate a unique ID for the new webhook
             webhook, created = Webhook.objects.get_or_create(unique_id=unique_id, defaults={
                 'name': name,
                 'email': email,
@@ -26,11 +28,14 @@ def webhook_view(request, unique_id):
                 'project': data.get('project'),
             })
 
-            return JsonResponse({'message': 'Webhook created/updated successfully.'})
+            return redirect('homepage')  # Redirect to the homepage after webhook creation
         else:
             return JsonResponse({'message': 'Name, email, and phone are required.'}, status=400)
 
-    elif request.method == 'GET':
+    return JsonResponse({'message': 'Invalid request method.'}, status=405)
+def webhook_view(request, unique_id):
+   
+    if request.method == 'GET':
         webhook = get_object_or_404(Webhook, unique_id=unique_id)
         data = {
             'name': webhook.name,
@@ -44,6 +49,10 @@ def webhook_view(request, unique_id):
             'project': webhook.project,
         }
         return JsonResponse(data)
+    
 
 
     return JsonResponse({'message': 'Invalid request method.'}, status=405)
+def homepage(request):
+    webhooks = Webhook.objects.all()
+    return render(request, 'homepage.html', {'webhooks': webhooks})
